@@ -1,0 +1,80 @@
+[
+  {
+    "id": "sample.docx_1",
+    "key": "seg_1",
+    "source": "Sample Formatted Document",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_2",
+    "key": "seg_2",
+    "source": "1. Introduction",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_3",
+    "key": "seg_3",
+    "source": "This document demonstrates different formatting options in a DOCX file.",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_4",
+    "key": "seg_4",
+    "source": "Bold text and italic text mixed in one paragraph.",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_5",
+    "key": "seg_5",
+    "source": "2. Bullet List",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_6",
+    "key": "seg_6",
+    "source": "First item",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_7",
+    "key": "seg_7",
+    "source": "Second item",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_8",
+    "key": "seg_8",
+    "source": "Third item",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_9",
+    "key": "seg_9",
+    "source": "3. Numbered List",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_10",
+    "key": "seg_10",
+    "source": "First step",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_11",
+    "key": "seg_11",
+    "source": "Second step",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_12",
+    "key": "seg_12",
+    "source": "Third step",
+    "target": ""
+  },
+  {
+    "id": "sample.docx_13",
+    "key": "seg_13",
+    "source": "4. Table Example",
+    "target": ""
+  }
+]

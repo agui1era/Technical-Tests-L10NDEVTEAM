@@ -1,157 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Bilingual Editor</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: #f9f9f9;
-      }
-      header {
-        background: #4a148c;
-        color: white;
-        padding: 10px;
-        display: flex;
-        gap: 10px;
-      }
-      header button {
-        background: white;
-        color: #4a148c;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 4px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      header button:hover {
-        background: #ede7f6;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-      }
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 8px 10px;
-        text-align: left;
-      }
-      th {
-        background: #eee;
-      }
-      textarea {
-        width: 100%;
-        min-height: 50px;
-        resize: vertical;
-      }
-      #fileInput {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <button onclick="document.getElementById('fileInput').click()">
-        Load JSON
-      </button>
-      <button onclick="downloadJSON()">Download JSON</button>
-      <input
-        type="file"
-        id="fileInput"
-        accept="application/json"
-        onchange="loadJSON(event)"
-      />
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <title>Translation Editor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f6f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #6c63ff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+      padding: 5px;
+      font-family: inherit;
+    }
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #6c63ff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input[type="file"] {
+      margin-top: 20px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Translation Editor</h1>
+  
+  <input type="file" id="fileInput" accept=".json">
 
-    <main>
-      <table id="editorTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Source</th>
-            <th>Target</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </main>
+  <table id="translationTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Key</th>
+        <th>Source</th>
+        <th>Target</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <script>
-      let segments = [];
+  <div class="controls">
+    <button id="downloadBtn">Download JSON</button>
+    <button id="resetBtn">Reset Targets</button>
+  </div>
 
-      function loadJSON(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            segments = JSON.parse(e.target.result);
-            renderTable();
-          } catch (err) {
-            alert("Invalid JSON file!");
-          }
-        };
-        reader.readAsText(file);
-      }
+  <script>
+    let jsonData = [];
 
-      function renderTable() {
-        const tbody = document.querySelector("#editorTable tbody");
-        tbody.innerHTML = "";
-        segments.forEach((seg, idx) => {
-          const tr = document.createElement("tr");
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-          const tdId = document.createElement("td");
-          tdId.textContent = seg.id;
-          tr.appendChild(tdId);
-
-          const tdSource = document.createElement("td");
-          tdSource.textContent = seg.source;
-          tr.appendChild(tdSource);
-
-          const tdTarget = document.createElement("td");
-          const textarea = document.createElement("textarea");
-          textarea.dataset.index = idx;
-          textarea.value = seg.target || "";
-          tdTarget.appendChild(textarea);
-          tr.appendChild(tdTarget);
-
-          tbody.appendChild(tr);
-        });
-      }
-
-      function downloadJSON() {
-        if (!segments.length) {
-          alert("Load a JSON file first!");
-          return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          jsonData = JSON.parse(e.target.result);
+          renderTable(jsonData);
+        } catch (err) {
+          alert("Invalid JSON file");
         }
+      };
+      reader.readAsText(file);
+    });
 
-        // Collect translated text
-        const updated = segments.map((seg, idx) => {
-          const val = document.querySelector(
-            `textarea[data-index='${idx}']`
-          ).value;
-          return {
-            id: seg.id,
-            key: seg.key,
-            source: seg.source,
-            target: val.trim() || ""
-          };
+    function renderTable(data) {
+      const tbody = document.querySelector("#translationTable tbody");
+      tbody.innerHTML = "";
+      data.forEach((row, index) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.key}</td>
+          <td>${row.source}</td>
+          <td><textarea data-index="${index}">${row.target || ""}</textarea></td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll("textarea").forEach(textarea => {
+        textarea.addEventListener("input", function(e) {
+          const idx = e.target.dataset.index;
+          jsonData[idx].target = e.target.value;
         });
+      });
+    }
 
-        const blob = new Blob([JSON.stringify(updated, null, 4)], {
-          type: "application/json",
-        });
-        const url = URL.createObjectURL(blob);
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "translated.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "updated.json";
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    </script>
-  </body>
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      jsonData.forEach(row => row.target = "");
+      renderTable(jsonData);
+    });
+  </script>
+</body>
 </html>
